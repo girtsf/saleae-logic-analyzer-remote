@@ -8,31 +8,28 @@ ENV DISPLAY :1
 RUN apt-get update -y
 
 RUN apt-get install -y --no-install-recommends \
-	xfonts-75dpi \
-	xfonts-100dpi \
-	autocutsel \
-	ubuntu-wallpapers \
-	xli \
-	xfonts-base \
-	blackbox \
-	xterm
+  xfonts-75dpi \
+  xfonts-100dpi \
+  autocutsel \
+  ubuntu-wallpapers \
+  xli \
+  xfonts-base \
+  blackbox \
+  xterm
 
-# tigervnc dependencies
-RUN apt-get install -y libgnutls28 libpixman-1-0 libtasn1-3-bin libglu1-mesa libxcursor1 libxtst6 xauth x11-utils libxinerama1 x11-xkb-utils
+RUN apt-get install -y tightvncserver
 
 # logic dependencies
 RUN apt-get -y install libglib2.0-0 pciutils unzip
 
 WORKDIR /packages
 
-COPY packages/tigervncserver_1.5.90-3ubuntu1_amd64.deb ./
-RUN dpkg -i tigervncserver_1.5.90-3ubuntu1_amd64.deb
 
 # install logic
-COPY packages/Logic+1.2.5+(64-bit).zip ./
-RUN unzip "Logic+1.2.5+(64-bit).zip" && \
-	mkdir /home/logic && \
-	cp -R "Logic 1.2.5 (64-bit)" /home/logic/Logic
+COPY "packages/Logic_1.2.10_(64-bit).zip" ./
+RUN unzip "Logic_1.2.10_(64-bit).zip" && \
+  mkdir /home/logic && \
+  cp -R "Logic 1.2.10 (64-bit)" /home/logic/Logic
 
 WORKDIR /home/logic
 
@@ -51,7 +48,9 @@ COPY config/start.sh /home/logic/
 COPY config/blackbox-menu /etc/X11/blackbox/
 
 USER logic
-RUN cat /home/logic/password.txt /home/logic/password.txt | vncpasswd
+RUN mkdir -p ~/.vnc
+RUN cat /home/logic/password.txt | vncpasswd -f > ~/.vnc/passwd
+RUN chmod 700 ~/.vnc ~/.vnc/passwd
 
 USER root
 RUN rm /home/logic/password.txt
