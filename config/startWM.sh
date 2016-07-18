@@ -1,6 +1,7 @@
 #!/bin/bash
 DIR="/home/logic"
-tightvncserver -geometry $GEOMETRY -pixelformat rgb888 :1
+# tightvncserver -geometry $GEOMETRY -pixelformat rgb888 :1
+tigervncserver -geometry $GEOMETRY -pixelformat rgb888 :1
 blackbox &
 # enable clipboard
 autocutsel -s CLIPBOARD -fork

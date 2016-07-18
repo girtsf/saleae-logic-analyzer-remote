@@ -17,7 +17,11 @@ RUN apt-get install -y --no-install-recommends \
   blackbox \
   xterm
 
-RUN apt-get install -y tightvncserver
+# tigervnc deps
+RUN apt-get install -y libgnutls28 libpixman-1-0 libtasn1-3-bin libglu1-mesa libxcursor1 libxtst6 xauth x11-utils libxinerama1 x11-xkb-utils
+
+COPY packages/tigervncserver_1.5.90-3ubuntu1_amd64.deb ./
+RUN dpkg -i tigervncserver_1.5.90-3ubuntu1_amd64.deb
 
 # logic dependencies
 RUN apt-get -y install libglib2.0-0 pciutils unzip
